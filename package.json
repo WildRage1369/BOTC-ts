@@ -4,7 +4,7 @@
   "description": "Blood on the Clocktower Discord bot made using TypeScript and Discord.js",
   "main": "index.ts",
   "scripts": {
-      "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -13,7 +13,9 @@
   "author": "Maxine Reyes Gomez",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.16.3"
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",
