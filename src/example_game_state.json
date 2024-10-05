@@ -1,0 +1,40 @@
+{
+    "storyteller": "",
+    "bluffs": [],
+    "isDaytime": true,
+    "players": [
+        {
+            "name": "Alice",
+            "username": "",
+            "role": "",
+            "alignment": "",
+            "isVoteless": false,
+            "isDead": false,
+            "isDrunk": false,
+            "isPoisoned": false,
+            "pronouns": "they/them",
+            "location": 0
+        },
+        {
+            "name": "Bob",
+            "username": "",
+            "role": "",
+            "alignment": "",
+            "isVoteless": true,
+            "isDead": true,
+            "isDrunk": false,
+            "isPoisoned": false,
+            "pronouns": "they/them",
+            "location": 1
+        }
+
+    ],
+    "nominations": [
+        {
+            "nominator": "Bob",
+            "nominee": "Alice",
+            "votesNeeded": 0,
+            "votes": [ "Alice" ]
+        }
+    ]
+}
