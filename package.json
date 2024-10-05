@@ -1,0 +1,23 @@
+{
+  "name": "botc-ts",
+  "version": "0.1.0",
+  "description": "Blood on the Clocktower Discord bot made using TypeScript and Discord.js",
+  "main": "index.ts",
+  "scripts": {
+      "start": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WildRage1369/BOTC-ts/"
+  },
+  "author": "Maxine Reyes Gomez",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}
