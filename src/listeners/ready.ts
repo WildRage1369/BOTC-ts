@@ -7,6 +7,8 @@ export default (client: Client): void => {
             return;
         }
         await client.application.commands.set(Commands);
-        console.log(`${client.user.username} is online`);
+        console.log(`${client.user.username} is online with commands:`);
+        console.table(Commands)
     });
 };
+//https://discord.com/api/oauth2/authorize?client_id={CLIENT_ID}&permissions={PERMISSIONS}&scope={SCOPE}
