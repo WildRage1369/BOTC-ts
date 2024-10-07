@@ -3,12 +3,20 @@ import { Command } from "../command";
 import fs from 'fs';
 import path from 'path';
 
-export const Start: Command = {
-    name: "start",
-    description: "Starts the game",
+export const ListPlayers: Command = {
+    name: "listplayers",
+    description: "Lists all players",
     run: async (client: Client, interaction: CommandInteraction) => {
+
         const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../example_game_state.json"), "utf-8"));
-        const content = json.storyteller;
+
+        var content = "";
+        for (const player of json.players) {
+            content += `\n${player.name}: ${player.username} (${player.pronouns})`;
+            if (player.isDead) {
+                content += " [dead]";
+            }
+        }
 
         await interaction.followUp({
             ephemeral: true,

@@ -1,11 +1,12 @@
 {
     "storyteller": "",
+    "script": "laissez_un_faire",
     "bluffs": [],
     "isDaytime": true,
     "players": [
         {
             "name": "Alice",
-            "username": "",
+            "username": "alice",
             "role": "",
             "alignment": "",
             "isVoteless": false,
@@ -17,7 +18,7 @@
         },
         {
             "name": "Bob",
-            "username": "",
+            "username": "bob",
             "role": "",
             "alignment": "",
             "isVoteless": true,
