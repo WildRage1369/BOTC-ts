@@ -6,8 +6,8 @@ import path from 'path';
 export const Start: Command = {
     name: "start",
     description: "Starts the game",
-    run: async (client: Client, interaction: CommandInteraction) => {
-        const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../example_game_state.json"), "utf-8"));
+    run: async (_client: Client, interaction: CommandInteraction) => {
+        const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
         const content = json.storyteller;
 
         await interaction.followUp({
