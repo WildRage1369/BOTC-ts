@@ -1,10 +1,14 @@
-import { CommandInteraction, Client, Interaction } from "discord.js";
+import { CommandInteraction, Client, Interaction, AutocompleteInteraction } from "discord.js";
 import { Commands } from "../commands";
 
 export default (client: Client): void => {
     client.on("interactionCreate", async (interaction: Interaction) => {
-        if (interaction.isCommand() || interaction.isContextMenuCommand()) {
-            await handleSlashCommand(client, interaction);
+        if (interaction.isCommand() || interaction.isContextMenuCommand() || interaction.isAutocomplete()){
+            if (interaction.isAutocomplete()) {
+                await handleAutocomplete(client, interaction);
+            } else {
+                await handleSlashCommand(client, interaction);
+            }
         }
     });
 };
@@ -19,4 +23,15 @@ const handleSlashCommand = async (client: Client, interaction: CommandInteractio
     await interaction.deferReply();
 
     slashCommand.run(client, interaction);
+    await interaction.client.application.commands.set(Commands)
+};
+
+const handleAutocomplete = async (client: Client, interaction: AutocompleteInteraction): Promise<void> => {
+    const slashCommand = Commands.find(c => c.name === interaction.commandName);
+
+    if (!slashCommand) { throw new Error("No command found") }
+    if (!slashCommand.autocomplete) { throw new Error("No autocomplete function found") }
+
+    slashCommand.autocomplete(client, interaction);
+    await interaction.client.application.commands.set(Commands)
 };
