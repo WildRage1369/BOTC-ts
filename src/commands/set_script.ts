@@ -43,7 +43,8 @@ export const SetScript: Command = {
                     fs.writeFile(path.resolve(__dirname, "./../game_state.json"), JSON.stringify(json), (err) => {
                         if (err) throw err;
                     })
-                    content += " " + interaction.options.data[0].value
+
+                    content += " " + json.script.replaceAll("_", " ").replaceAll(".json", "")
                 }
 
                 interactionCreate(client);
@@ -59,7 +60,6 @@ export const SetScript: Command = {
                 });
                 throw err;
             });
-        console.log(content)
     }
 };
 
@@ -69,8 +69,8 @@ function getScripts(cmd?: Command): any[] {
         { name: "New script", value: "new" }
     ]
     for (const file of files) {
-        // file.replaceAll("_", " ").replaceAll(".json", "");
-        choices = [...choices, { name: file, value: file }]
+        const name = file.replaceAll("_", " ").replaceAll(".json", "");
+        choices = [...choices, { name: name, value: file }]
     }
     if (cmd) {
         cmd.options = [
