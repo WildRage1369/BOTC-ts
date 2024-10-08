@@ -6,7 +6,7 @@ import path from 'path';
 export const NewGame: Command = {
     name: "newgame",
     description: "Set up a new game",
-    run: async (_client: Client, interaction: CommandInteraction) => {
+    run: async (client: Client, interaction: CommandInteraction) => {
         const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
         json.players = [];
         json.nominations = [];
