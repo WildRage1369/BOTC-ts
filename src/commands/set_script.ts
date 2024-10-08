@@ -1,5 +1,6 @@
 import { CommandInteraction, Client, ApplicationCommandOptionType } from "discord.js";
 import { Command } from "../command";
+import { Commands } from "../commands"
 import fs from 'fs';
 import path from 'path';
 import interactionCreate from "./../listeners/interactionCreate";
@@ -28,12 +29,13 @@ export const SetScript: Command = {
     run: async (client: Client, interaction: CommandInteraction) => {
         var content = "Error: Failed to run command"
         lockfile.lock(path.resolve(__dirname, "./../game_state.json"))
-            .then((release: Function) => {
+            .then(async (release: Function) => {
                 const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
                 content = "Script set to"
                 if (interaction.options.data[0].value == "new") {
                     json.script = interaction.options.data[1].attachment?.name;
-                    const new_script = interaction.options.data[1].attachment?.toJSON();
+                    const url = interaction.options.data[1].attachment?.url ;
+                    const new_script = await getAttachment(url ? url : "");
                     fs.writeFile(path.resolve(__dirname, "./../scripts/" + json.script), JSON.stringify(new_script), (err) => {
                         if (err) throw err;
                     })
@@ -47,19 +49,20 @@ export const SetScript: Command = {
                     content += " " + json.script.replaceAll("_", " ").replaceAll(".json", "")
                 }
 
-                interactionCreate(client);
-                interaction.followUp({
+                await interaction.followUp({
                     ephemeral: true,
                     content: content
                 });
                 return release();
-            }).catch((err: Error) => {
-                interaction.followUp({
+            }).catch(async (err: Error) => {
+                await interaction.followUp({
                     ephemeral: true,
                     content: "Error: Command failed to run. Please try again."
                 });
                 throw err;
             });
+
+        await client.application?.commands.set(Commands);
     }
 };
 
@@ -91,4 +94,25 @@ function getScripts(cmd?: Command): any[] {
     }
     return choices;
 
+}
+
+async function getAttachment(url: string): Promise<string> {
+    var ret = ""
+    await fetch(
+        url,
+        {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            }
+        }
+    ).then(res => {
+        if (!res.ok) { throw new Error(`HTTP error ${res.status}`); }
+        return res.json();
+    }).then(json => {
+        ret = json
+    }).catch(error => {
+        console.error("Error:", error);
+    })
+    return ret;
 }
