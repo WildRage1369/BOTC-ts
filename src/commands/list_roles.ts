@@ -23,7 +23,7 @@ export const ListRoles: Command = {
     run: async (_client: Client, interaction: CommandInteraction) => {
 
         const script = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8")).script;
-        const script_json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../scripts/" + script + ".json"), "utf-8"));
+        const script_json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../scripts/" + script), "utf-8"));
         var embed = new EmbedBuilder()
             .setColor(0xff0000)
             .setTitle("Role Descriptions")
