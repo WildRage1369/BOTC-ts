@@ -2,7 +2,7 @@ import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteI
 import { Command } from "../command";
 import fs from 'fs';
 import path from 'path';
-
+const lockfile = require('proper-lockfile');
 
 export const SetRole: Command = {
     name: "setrole",
@@ -24,28 +24,53 @@ export const SetRole: Command = {
         }
     ],
     run: async (_client: Client, interaction: CommandInteraction) => {
-        await interaction.followUp({
-            ephemeral: true,
-            content: "Set " + interaction.options.data[0].value + "'s" + " role to " + interaction.options.data[1].value
-        });
-        // await client.application?.commands.set(Commands);
+        lockfile.lock(path.resolve(__dirname, "./../game_state.json"))
+            .then(async (release: Function) => {
+                const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
+                var player: any = interaction.options.data[0].value?.toString()
+                player = player ? player : interaction.user.username;
+                player = json.players.find((p: any) => {return p.username == player});
+                player.role = interaction.options.data[1].value;
+                fs.writeFile(path.resolve(__dirname, "./../game_state.json"), JSON.stringify(json), (err) => { if (err) throw err; })
+
+                await interaction.followUp({
+                    ephemeral: true,
+                    content: "Set " + player.name + "'s" + " role to " + interaction.options.data[1].value
+                });
+                return release();
+            }).catch(async (err: Error) => {
+                await interaction.followUp({
+                    ephemeral: true,
+                    content: "Error: Command failed to run. Please try again."
+                });
+                throw err;
+            });
     },
     autocomplete: async (_client: Client, interaction: AutocompleteInteraction) => {
-
-        const script = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8")).script;
-        const script_json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../scripts/" + script), "utf-8"));
-
-        var roles: any[] = []
-        for (const [index, role] of script_json.entries()) {
-            if (index == 25) { break; }
-            const role_name = role.id[0].toUpperCase() + role.id.slice(1);
-            roles = [
-                ...roles,
-                { name: role_name, value: role.id }
-            ]
+        const state = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
+        const argument = interaction.options.getFocused(true).name;
+        var choices: any[] = []
+        if (argument == "player") {
+            for (const player of state.players) {
+                choices = [
+                    ...choices,
+                    { name: player.name, value: player.username }
+                ]
+            }
+        } else {
+            const script_json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../scripts/" + state.script), "utf-8"));
+            for (const [index, role] of script_json.entries()) {
+                if (index == 25) { break; }
+                const role_name = role.id[0].toUpperCase() + role.id.slice(1);
+                choices = [
+                    ...choices,
+                    { name: role_name, value: role.id }
+                ]
+            }
         }
-		var focusedValue = interaction.options.getFocused();
-        const filtered = roles.filter(role => role.name.toLowerCase().startsWith(focusedValue))
+
+        var focusedValue = interaction.options.getFocused();
+        const filtered = choices.filter(role => role.name.toLowerCase().startsWith(focusedValue))
         await interaction.respond(
             filtered.map(role => ({ name: role.name, value: role.value }))
         )
