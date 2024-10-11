@@ -1,5 +1,5 @@
 import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteInteraction } from "discord.js";
-import { Command } from "../command";
+import { Command, getRoleType } from "../command";
 import fs from 'fs';
 import path from 'path';
 const lockfile = require('proper-lockfile');
@@ -27,10 +27,28 @@ export const SetRole: Command = {
         lockfile.lock(path.resolve(__dirname, "./../game_state.json"))
             .then(async (release: Function) => {
                 const json = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./../game_state.json"), "utf-8"));
+
                 var player: any = interaction.options.data[0].value?.toString()
-                player = player ? player : interaction.user.username;
+                player = player ? player : interaction.user.username; // If no player is specified, use the user's username
+
+                // find and set the player's role and alignment
                 player = json.players.find((p: any) => {return p.username == player});
                 player.role = interaction.options.data[1].value;
+
+                player.alignment = getRoleType(player.role);
+                switch (player.alignment) {
+                    case "Townsfolk":
+                    case "Outsider":
+                        player.alignment = "Good";
+                        break;
+                    case "Minion":
+                    case "Demon":
+                        player.alignment = "Evil";
+                        break;
+                    default:
+                        player.alignment = "Neutral";
+                }
+
                 fs.writeFile(path.resolve(__dirname, "./../game_state.json"), JSON.stringify(json), (err) => { if (err) throw err; })
 
                 await interaction.followUp({
