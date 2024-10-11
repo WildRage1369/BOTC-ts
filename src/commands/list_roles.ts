@@ -1,5 +1,5 @@
 import { CommandInteraction, Client, EmbedBuilder, ApplicationCommandOptionType } from "discord.js";
-import { Command } from "../command";
+import { Command, getRoleType } from "../command";
 import fs from 'fs';
 import path from 'path';
 
@@ -77,29 +77,3 @@ async function getRoleDescription(role: string): Promise<string> {
     return ret
 }
 
-async function getRoleType(role: string): Promise<string> {
-    var role_type: string = ""
-    await fetch(
-        "https://wiki.bloodontheclocktower.com/api.php?action=parse&format=json&page=" + role + "&prop=headhtml&disablelimitreport=1&disableeditsection=1&disabletoc=1",
-        {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-            }
-        }
-    ).then(res => {
-        if (!res.ok) { throw new Error(`HTTP error ${res.status}`); }
-        return res.json();
-    }).then(json => {
-        if (/Townsfolk/.test(json.parse.headhtml["*"])) { role_type = "Townsfolk" }
-        else if (/Outsider/.test(json.parse.headhtml["*"])) { role_type = "Outsider" }
-        else if (/Minion/.test(json.parse.headhtml["*"])) { role_type = "Minion" }
-        else if (/Demon/.test(json.parse.headhtml["*"])) { role_type = "Demon" }
-        else if (/Traveller/.test(json.parse.headhtml["*"])) { role_type = "Traveller" }
-        else if (/Fabled/.test(json.parse.headhtml["*"])) { role_type = "Fabled" }
-    }).catch(error => {
-        console.error("Error:", error);
-    })
-    if (role_type == "") { console.error("RET IS EMPTY") }
-    return role_type
-}
