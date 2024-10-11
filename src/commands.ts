@@ -6,5 +6,7 @@ import { SetScript } from "./commands/set_script";
 import { Join } from "./commands/join";
 import { Leave } from "./commands/leave";
 import { SetRole } from "./commands/set_role";
+import { SetPlayer } from "./commands/set_player";
+import { GenerateCircle } from "./commands/generate_circle";
 
-export const Commands: Command[] = [Start, ListPlayers, ListRoles, SetScript, Join, Leave, SetRole];
+export const Commands: Command[] = [Start, ListPlayers, ListRoles, SetScript, Join, Leave, SetRole, SetPlayer, GenerateCircle];
