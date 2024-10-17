@@ -58,9 +58,7 @@ export const GenerateCircle: Command = {
             var buffer: any[] = [];
             buffer[0] = canvas.toBuffer("image/png");
             fs.writeFileSync(path.resolve(__dirname, "./image.png"), buffer[0]);
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) { throw error; }
         if (!buffer) {
             throw new Error("Error generating circle");
         }
