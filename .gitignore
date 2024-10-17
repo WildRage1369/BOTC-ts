@@ -3,3 +3,5 @@ yarn.lock
 .env
 package-lock.json
 src/game_state.json
+src/commands/image.png
+src/images
