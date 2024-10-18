@@ -1,4 +1,4 @@
-import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteInteraction, ChannelType, PermissionFlagsBits, TextChannel } from "discord.js";
+import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteInteraction, ChannelType, PermissionFlagsBits } from "discord.js";
 import { Command, err} from "../command";
 import fs from 'fs';
 import path from 'path';
