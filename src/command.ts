@@ -1,4 +1,4 @@
-import { CommandInteraction, ChatInputApplicationCommandData, AutocompleteInteraction, Client } from "discord.js";
+import { ChannelType, PermissionFlagsBits, CommandInteraction, ChatInputApplicationCommandData, AutocompleteInteraction, Client } from "discord.js";
 
 export interface Command extends ChatInputApplicationCommandData {
     run: (client: Client, interaction: CommandInteraction) => void;
@@ -32,8 +32,40 @@ export async function getRoleType(role: string): Promise<string> {
     return role_type
 }
 
+export async function Whisper(client: Client, interaction: CommandInteraction, user: string, content: string) {
+            // fetch all information required and parse it
+        const user_id = client.users.cache.find(u => u.tag === user)?.id!
+        user = user?.replaceAll(".", "")
+        const everyone_id: string = interaction.guild?.roles.everyone.id!
+        if (!user || !user_id || !everyone_id) { Err(interaction, "User not found"); return; }
 
-export async function err(interaction: CommandInteraction, error: string) {
+        // fetch channel or create channel if it doesn't exist
+        var channel = await interaction.guild?.channels.cache.find(c => c.name === user)?.fetch()
+        if (!channel || channel.type !== ChannelType.GuildText) {
+            channel = await interaction.guild?.channels.create({
+                parent: "1296906137148456990", // the dm category id, hardcoded for now
+                name: user,
+                type: ChannelType.GuildText,
+                permissionOverwrites: [
+                    {
+                        id: user_id,
+                        allow: [PermissionFlagsBits.ViewChannel]
+                    },
+                    {
+                        id: everyone_id,
+                        deny: [PermissionFlagsBits.ViewChannel]
+                    }
+                ]
+            })
+            if (!channel) { Err(interaction, "Channel creation failed"); return;}
+        }
+        await channel.send({
+            content
+        });
+
+}
+
+export async function Err(interaction: CommandInteraction, error: string) {
             await interaction.followUp({
                 ephemeral: true,
                 content: "Error: Command failed to run. Please try again. See log for information"

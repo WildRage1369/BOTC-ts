@@ -10,6 +10,6 @@ import { SetPlayer } from "./commands/set_player";
 import { GenerateCircle } from "./commands/generate_circle";
 import { SetBluffs } from "./commands/set_bluffs";
 import { AssignRoles } from "./commands/assign_roles";
-import { Whisper } from "./commands/whisper";
+import { WhisperCommand } from "./commands/whisper";
 
-export const Commands: Command[] = [Start, ListPlayers, ListRoles, SetScript, Join, Leave, SetRole, SetPlayer, GenerateCircle, SetBluffs, AssignRoles, Whisper];
+export const Commands: Command[] = [Start, ListPlayers, ListRoles, SetScript, Join, Leave, SetRole, SetPlayer, GenerateCircle, SetBluffs, AssignRoles, WhisperCommand];

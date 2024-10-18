@@ -1,10 +1,10 @@
-import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteInteraction, ChannelType, PermissionFlagsBits } from "discord.js";
-import { Command, err} from "../command";
+import { CommandInteraction, Client, ApplicationCommandOptionType, AutocompleteInteraction } from "discord.js";
+import { Command, Whisper} from "../command";
 import fs from 'fs';
 import path from 'path';
 const lockfile = require('proper-lockfile');
 
-export const Whisper: Command = {
+export const WhisperCommand: Command = {
     name: "whisper",
     description: "Whisper a message to a player",
     options: [
@@ -24,37 +24,7 @@ export const Whisper: Command = {
     ],
     // TODO: fetch category id
     run: async (client: Client, interaction: CommandInteraction) => {
-        // fetch all information required and parse it
-        var user = interaction.options.data[0].value?.toString()!
-        const user_id = client.users.cache.find(u => u.tag === user)?.id!
-        user = user?.replaceAll(".", "")
-        const everyone_id: string = interaction.guild?.roles.everyone.id!
-        if (!user || !user_id || !everyone_id) { err(interaction, "User not found"); return; }
-
-        // fetch channel or create channel if it doesn't exist
-        var channel = await interaction.guild?.channels.cache.find(c => c.name === user)?.fetch()
-        if (!channel || channel.type !== ChannelType.GuildText) {
-            channel = await interaction.guild?.channels.create({
-                parent: "1296906137148456990", // the dm category id, hardcoded for now
-                name: user,
-                type: ChannelType.GuildText,
-                permissionOverwrites: [
-                    {
-                        id: user_id,
-                        allow: [PermissionFlagsBits.ViewChannel]
-                    },
-                    {
-                        id: everyone_id,
-                        deny: [PermissionFlagsBits.ViewChannel]
-                    }
-                ]
-            })
-            if (!channel) { err(interaction, "Channel creation failed"); return;}
-        }
-        var content = interaction.options.data[1].value?.toString()
-        await channel.send({
-            content
-        });
+        Whisper(client, interaction, interaction.options?.data[0].value?.toString()!, interaction.options.data[1].value?.toString()!)
         interaction.followUp({
             ephemeral: true,
             content: "Message sent!"
