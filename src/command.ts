@@ -31,3 +31,12 @@ export async function getRoleType(role: string): Promise<string> {
     if (role_type == "") { console.error("RET IS EMPTY") }
     return role_type
 }
+
+
+export async function err(interaction: CommandInteraction, error: string) {
+            await interaction.followUp({
+                ephemeral: true,
+                content: "Error: Command failed to run. Please try again. See log for information"
+            });
+            throw Error(error) 
+}
