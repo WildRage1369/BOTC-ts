@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Err, Whisper } from "./command"
+
 const role_map: any = {
     "undertaker": undertaker,
 }
@@ -14,7 +15,6 @@ var mtimes: any = {
 export async function doRole(client: any, interaction: any, user: string, role: string) {
     const stats = fs.statSync(path.resolve(__dirname, "./game_state.json"))
     if (!stats) { Err(interaction, "Error: Game state file not found."); return; }
-    console.log(stats.mtime);
     if (stats.mtime != mtimes.game_state) {
         game_state = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./game_state.json"), "utf-8"));
         if (game_state.script != script) {
@@ -37,7 +37,6 @@ function undertaker(client: any, interaction: any, user: string) {
     }
     if (!dead_nom) {return;}
     const dead_char = game_state.players.find((char: any) => {return char.name == dead_nom.nominee});
-    console.log(dead_nom);
     Whisper(client, interaction, user, "Today, the " + dead_char.role + " died by execution.")
     return;
 
